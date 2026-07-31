@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data OJT ID-2026</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* ===== GAYA DASAR ===== */
+    body { background: #f3f4f6; font-family: 'Inter', system-ui, sans-serif; }
+    #loadingOverlay { background: rgba(255,255,255,0.75); backdrop-filter: blur(4px); border-radius: 1rem; z-index: 50; }
+    .spinner { width: 44px; height: 44px; border: 4px solid #e5e7eb; border-top-color: #4f46e5; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .modal-backdrop { background: rgba(0,0,0,0.45); backdrop-filter: blur(3px); }
+    .modal-panel { width: 94%; max-width: 640px; max-height: 92vh; overflow-y: auto; transform: scale(0.96) translateY(12px); transition: 0.25s; }
+    .modal-panel.active { transform: scale(1) translateY(0); }
+    .table-wrap { overflow-x: auto; }
+    .table-wrap th, .table-wrap td { white-space: nowrap; padding: 0.6rem 0.9rem; font-size: 0.875rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+    @media (max-width: 768px) {
+      .table-wrap th, .table-wrap td { padding: 0.4rem 0.5rem; font-size: 0.75rem; max-width: 120px; }
+    }
+    .action-btn { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.6rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 500; border: none; cursor: pointer; transition: 0.15s; white-space: nowrap; }
+    .action-btn:active { transform: scale(0.93); }
+    .action-btn .label { display: inline; }
+    @media (max-width: 420px) { .action-btn .label { display: none; } .action-btn { padding: 0.3rem 0.45rem; min-width: 2rem; } }
+    .pagination-wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.25rem; }
+    .page-btn { padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 500; background: #e5e7eb; border: none; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .page-btn:hover:not(:disabled) { background: #d1d5db; }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    @media (max-width: 480px) { .page-btn .label { display: none; } }
+    .output-log { font-size: 0.8rem; background: #f3f4f6; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; margin-top: 1.25rem; max-height: 120px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+    .modal-form label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; color: #1f2937; }
+    .modal-form input, .modal-form select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.95rem; background: #fafafa; transition: 0.15s; }
+    .modal-form input:focus, .modal-form select:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.2); background: #fff; }
+    .modal-form .field-group { margin-bottom: 1rem; }
+    .empty-state { text-align: center; padding: 2rem 1rem; color: #9ca3af; }
+    .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+    .modal-close { position: absolute; top: 0.75rem; right: 0.75rem; background: transparent; border: none; font-size: 1.4rem; color: #9ca3af; cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 0.375rem; }
+    .modal-close:hover { background: #f3f4f6; color: #1f2937; }
+
+    /* ===== CARD UNTUK MOBILE ===== */
+    .card-container { display: grid; grid-template-columns: 1fr; gap: 1rem; padding: 0.5rem 0; }
+    .card-item { background: #fff; border-radius: 0.75rem; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1rem; transition: 0.15s; }
+    .card-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .card-item .field-row { display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #f3f4f6; }
+    .card-item .field-row:last-of-type { border-bottom: none; }
+    .card-item .field-label { font-weight: 600; color: #4b5563; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .card-item .field-value { color: #1f2937; font-size: 0.9rem; word-break: break-word; text-align: right; max-width: 65%; }
+    .card-item .card-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb; }
+    .card-item .card-actions .action-btn { font-size: 0.8rem; padding: 0.35rem 0.7rem; }
+    .card-item .card-actions .action-btn .label { display: inline; }
+    @media (max-width: 480px) {
+      .card-item .field-row { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+      .card-item .field-value { text-align: left; max-width: 100%; font-size: 0.85rem; }
+      .card-item .card-actions .action-btn .label { display: none; }
+      .card-item .card-actions .action-btn { padding: 0.3rem 0.5rem; min-width: 2.2rem; }
+    }
+
+    /* Tampilan dual-mode */
+    .table-wrap.desktop-only { display: block; }
+    .card-wrap.mobile-only { display: none; }
+    @media (max-width: 768px) {
+      .table-wrap.desktop-only { display: none; }
+      .card-wrap.mobile-only { display: block; }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-6">
+
+<div class="max-w-6xl mx-auto">
+
+  <div class="bg-white rounded-2xl shadow-xl border border-gray-200/80 p-4 sm:p-6 lg:p-8 relative">
+
+    <div id="loadingOverlay" class="absolute inset-0 hidden flex items-center justify-center rounded-2xl">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 flex items-center gap-2">
+        <i class="fas fa-database text-indigo-600"></i>
+        OJT ID-2026
+      </h1>
+      <button id="openModalBtn" class="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold transition shadow-md hover:shadow-lg active:scale-95 text-sm sm:text-base">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Record</span>
+      </button>
+    </div>
+
+    <!-- ===== TABEL (desktop) ===== -->
+    <div class="table-wrap desktop-only rounded-xl border border-gray-200 shadow-sm">
+      <table class="bg-white">
+        <thead class="bg-gray-100/80 border-b border-gray-200">
+          <tr id="tableHeader"></tr>
+        </thead>
+        <tbody id="tableBody" class="divide-y divide-gray-100"></tbody>
+      </table>
+    </div>
+
+    <!-- ===== CARD (mobile) ===== -->
+    <div class="card-wrap mobile-only">
+      <div id="cardContainer" class="card-container"></div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrap">
+      <button id="firstPage" class="page-btn"><i class="fas fa-angles-left"></i><span class="label">First</span></button>
+      <button id="prevPage" class="page-btn"><i class="fas fa-chevron-left"></i><span class="label">Prev</span></button>
+      <span id="pageInfo" class="text-sm font-medium text-gray-600 px-2">Page 1 of 1</span>
+      <button id="nextPage" class="page-btn"><span class="label">Next</span><i class="fas fa-chevron-right"></i></button>
+      <button id="lastPage" class="page-btn"><span class="label">Last</span><i class="fas fa-angles-right"></i></button>
+    </div>
+
+    <div id="output" class="output-log">
+      <i class="fas fa-terminal text-gray-400 mr-2"></i>
+      <span>Ready</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div id="modal" class="fixed inset-0 hidden modal-backdrop items-center justify-center z-50 p-4">
+  <div id="modalPanel" class="modal-panel bg-white rounded-2xl shadow-2xl p-5 sm:p-7 relative">
+    <button id="modalCloseBtn" class="modal-close"><i class="fas fa-times"></i></button>
+    <h2 id="modalTitle" class="text-xl sm:text-2xl font-bold text-gray-800 mb-5 pr-8">
+      <i class="fas fa-pen-to-square text-indigo-500 mr-2"></i>
+      Add New Record
+    </h2>
+    <form id="modalForm" class="modal-form"></form>
+    <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+      <button id="cancelBtn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold transition flex items-center justify-center gap-2">
+        <i class="fas fa-xmark"></i> Cancel
+      </button>
+      <button id="submitBtn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+        <i class="fas fa-check"></i> Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT -->
+<script>
+(function() {
+  'use strict';
+
+  // ------------------------------------------------------------
+  // 1. KONFIGURASI
+  // ------------------------------------------------------------
+  const API_URL = 'https://script.google.com/macros/s/AKfycbykBS9AAj6klYXKZVNrGn1RJkkSdudaPnntXHHcVOuhtXr1hPC8gCoJSDPimW5IglW8Hg/exec';
+  const PAGE_SIZE = 20;
+
+  // ------------------------------------------------------------
+  // 2. STATE
+  // ------------------------------------------------------------
+  const state = {
+    headers: [],
+    data: [],
+    currentPage: 1,
+    totalPages: 0,
+    editingRow: null,
+    dropdowns: {},     // { fieldName: [ {id, uraian}, ... ] }
+    dropdownLoading: {},
+    isPreloaded: false,
+  };
+
+  // ------------------------------------------------------------
+  // 3. DOM REFS
+  // ------------------------------------------------------------
+  const $ = id => document.getElementById(id);
+  const dom = {
+    loading: $('loadingOverlay'),
+    modal: $('modal'),
+    modalPanel: $('modalPanel'),
+    modalTitle: $('modalTitle'),
+    modalForm: $('modalForm'),
+    output: $('output'),
+    openBtn: $('openModalBtn'),
+    cancelBtn: $('cancelBtn'),
+    submitBtn: $('submitBtn'),
+    closeBtn: $('modalCloseBtn'),
+    prevPage: $('prevPage'),
+    nextPage: $('nextPage'),
+    firstPage: $('firstPage'),
+    lastPage: $('lastPage'),
+    pageInfo: $('pageInfo'),
+    thead: $('tableHeader'),
+    tbody: $('tableBody'),
+    cardContainer: $('cardContainer'),
+  };
+
+  // ------------------------------------------------------------
+  // 4. UI HELPERS
+  // ------------------------------------------------------------
+  function showLoading(show) {
+    dom.loading.style.display = show ? 'flex' : 'none';
+  }
+  function setOutput(msg, isError = false) {
+    const icon = isError ? 'fa-circle-exclamation text-red-500' : 'fa-terminal text-gray-400';
+    dom.output.innerHTML = `<i class="fas ${icon} mr-2"></i><span>${msg}</span>`;
+  }
+  function toast(icon, title) {
+    Swal.fire({ icon, title, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true, backdrop: false });
+  }
+  function showError(msg) {
+    Swal.fire({ icon: 'error', title: 'Oops...', text: msg, confirmButtonColor: '#4f46e5' });
+  }
+  function confirmDelete(row) {
+    return Swal.fire({
+      title: 'Hapus Record?',
+      html: `Yakin ingin menghapus <strong>Baris ${row}</strong>?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: '<i class="fas fa-trash mr-2"></i> Ya, hapus',
+      cancelButtonText: 'Batal',
+      reverseButtons: true,
+      focusCancel: true,
+    });
+  }
+  function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+  // ------------------------------------------------------------
+  // 5. DROPDOWN CACHE & PARALEL
+  // ------------------------------------------------------------
+  async function fetchDropdownOptions(fieldName) {
+    if (state.dropdowns[fieldName]) return state.dropdowns[fieldName];
+    if (state.dropdownLoading[fieldName]) {
+      return new Promise(resolve => {
+        const check = setInterval(() => {
+          if (!state.dropdownLoading[fieldName]) {
+            clearInterval(check);
+            resolve(state.dropdowns[fieldName] || []);
+          }
+        }, 100);
+      });
+    }
+    state.dropdownLoading[fieldName] = true;
+    try {
+      const res = await fetch(`${API_URL}?action=dropdown&field=${encodeURIComponent(fieldName)}`);
+      const json = await res.json();
+      state.dropdowns[fieldName] = (json.data && Array.isArray(json.data)) ? json.data : [];
+      return state.dropdowns[fieldName];
+    } catch (err) {
+      console.error('Dropdown error:', err);
+      state.dropdowns[fieldName] = [];
+      return [];
+    } finally {
+      state.dropdownLoading[fieldName] = false;
+    }
+  }
+
+  async function preloadAllDropdowns() {
+    if (state.isPreloaded) return;
+    const fields = state.headers.filter(f => f !== 'row');
+    if (fields.length === 0) return;
+    await Promise.all(fields.map(f => fetchDropdownOptions(f)));
+    state.isPreloaded = true;
+    console.log('✅ Semua dropdown preloaded');
+  }
+
+  // ------------------------------------------------------------
+  // 6. MODAL
+  // ------------------------------------------------------------
+  function resetForm() {
+    dom.modalForm.querySelectorAll('input, select').forEach(el => {
+      el.value = '';
+      el.classList.remove('border-red-400', 'ring-1', 'ring-red-300');
+    });
+  }
+
+  function buildForm(data = {}) {
+    dom.modalForm.innerHTML = '';
+    for (const field of state.headers) {
+      if (field === 'row') continue;
+      const div = document.createElement('div');
+      div.className = 'field-group';
+      const label = document.createElement('label');
+      label.textContent = capitalize(field) + ':';
+
+      const options = state.dropdowns[field] || [];
+      let input;
+
+      if (options.length > 0) {
+        // ===== DROPDOWN (value = uraian) =====
+        const select = document.createElement('select');
+        select.name = field;
+        select.id = 'field_' + field;
+        const def = document.createElement('option');
+        def.value = '';
+        def.textContent = '-- Pilih --';
+        select.appendChild(def);
+
+        options.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt.uraian;          // <-- SIMPAN URAIAN, BUKAN ID
+          o.textContent = opt.uraian;
+          select.appendChild(o);
+        });
+
+        // Saat edit, set value = uraian yang tersimpan (data[field])
+        if (data[field] !== undefined && data[field] !== null) {
+          select.value = data[field].toString();
+        }
+        input = select;
+      } else {
+        // ===== INPUT BIASA =====
+        const inp = document.createElement('input');
+        inp.name = field;
+        inp.id = 'field_' + field;
+        inp.value = data[field] !== undefined && data[field] !== null ? data[field] : '';
+        const lower = field.toLowerCase();
+        if (lower.includes('email')) inp.type = 'email';
+        else if (lower.includes('date')) inp.type = 'date';
+        else if (lower.includes('phone') || lower.includes('tel')) inp.type = 'tel';
+        else if (lower.includes('number') || lower.includes('age') || lower.includes('id')) inp.type = 'number';
+        else inp.type = 'text';
+        input = inp;
+      }
+
+      div.appendChild(label);
+      div.appendChild(input);
+      dom.modalForm.appendChild(div);
+    }
+  }
+
+  function showModal(show) {
+    if (show) {
+      dom.modal.classList.remove('hidden');
+      dom.modal.style.display = 'flex';
+      requestAnimationFrame(() => dom.modalPanel.classList.add('active'));
+    } else {
+      dom.modalPanel.classList.remove('active');
+      setTimeout(() => {
+        dom.modal.style.display = 'none';
+        dom.modal.classList.add('hidden');
+      }, 200);
+    }
+  }
+
+  function openModalForCreate() {
+    state.editingRow = null;
+    dom.modalTitle.innerHTML = `<i class="fas fa-plus-circle text-indigo-500 mr-2"></i> Add New Record`;
+    resetForm();
+    buildForm();
+    showModal(true);
+    setTimeout(() => {
+      const first = dom.modalForm.querySelector('input, select');
+      if (first) first.focus();
+    }, 250);
+  }
+
+  function openModalForEdit(rowData, rowNum) {
+    state.editingRow = rowNum;
+    dom.modalTitle.innerHTML = `<i class="fas fa-pen-to-square text-indigo-500 mr-2"></i> Edit Record (Row ${rowNum})`;
+    resetForm();
+    buildForm(rowData);
+    showModal(true);
+    setTimeout(() => {
+      const first = dom.modalForm.querySelector('input, select');
+      if (first) first.focus();
+    }, 250);
+  }
+
+  function closeModal() {
+    showModal(false);
+    resetForm();
+    state.editingRow = null;
+  }
+
+  // ------------------------------------------------------------
+  // 7. CRUD API
+  // ------------------------------------------------------------
+  async function fetchData(page) {
+    showLoading(true);
+    setOutput('Memuat data...');
+    try {
+      const url = `${API_URL}?action=read&page=${page}&pageSize=${PAGE_SIZE}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      if (json.data && Array.isArray(json.data)) {
+        state.headers = Object.keys(json.data[0] || {});
+        state.currentPage = json.page || 1;
+        state.totalPages = json.totalPages || 0;
+        state.data = json.data;
+        if (state.data.length === 0 && state.currentPage > 1) {
+          await fetchData(state.currentPage - 1);
+          return;
+        }
+        await preloadAllDropdowns();
+        renderData();
+        updatePagination();
+        setOutput(`Halaman ${state.currentPage} dari ${state.totalPages} · ${state.data.length} record`);
+      } else {
+        state.data = [];
+        state.headers = [];
+        state.totalPages = 0;
+        renderData();
+        updatePagination();
+        setOutput('Tidak ada data', false);
+      }
+    } catch (err) {
+      setOutput('Gagal memuat: ' + err.message, true);
+      showError('Gagal memuat data: ' + err.message);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function handleSubmit() {
+    const fields = dom.modalForm.querySelectorAll('input, select');
+    const formData = {};
+    let valid = true;
+    fields.forEach(el => {
+      const val = el.value.trim();
+      if (val === '') {
+        el.classList.add('border-red-400', 'ring-1', 'ring-red-300');
+        valid = false;
+      } else {
+        el.classList.remove('border-red-400', 'ring-1', 'ring-red-300');
+        formData[el.name] = val;
+      }
+    });
+    if (!valid) { toast('warning', 'Semua field wajib diisi'); return; }
+
+    const action = state.editingRow ? 'update' : 'create';
+    if (state.editingRow) formData.row = state.editingRow;
+
+    showLoading(true);
+    setOutput(action === 'create' ? 'Menyimpan...' : 'Memperbarui...');
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action, ...formData })
+      });
+      const json = await res.json();
+      if (json.success) {
+        closeModal();
+        toast('success', action === 'create' ? 'Record berhasil ditambahkan!' : 'Record diperbarui!');
+        fetchData(state.currentPage);
+      } else {
+        const err = json.error || json.message || 'Terjadi kesalahan';
+        showError(err);
+        setOutput('Error: ' + err, true);
+      }
+    } catch (err) {
+      showError('Gagal mengirim request: ' + err.message);
+      setOutput('Error: ' + err.message, true);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function deleteRow(rowNum) {
+    const result = await confirmDelete(rowNum);
+    if (!result.isConfirmed) return;
+    showLoading(true);
+    setOutput(`Menghapus baris ${rowNum}...`);
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'delete', row: rowNum })
+      });
+      const json = await res.json();
+      if (json.success) {
+        toast('success', `Baris ${rowNum} berhasil dihapus`);
+        fetchData(state.currentPage);
+      } else {
+        const err = json.error || 'Gagal menghapus';
+        showError(err);
+        setOutput('Error: ' + err, true);
+      }
+    } catch (err) {
+      showError('Gagal menghapus: ' + err.message);
+      setOutput('Error: ' + err.message, true);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  // ------------------------------------------------------------
+  // 8. RENDER DUAL MODE
+  // ------------------------------------------------------------
+  function isMobile() { return window.innerWidth < 768; }
+
+  function renderData() {
+    if (isMobile()) renderCards();
+    else renderTable();
+  }
+
+  // --- TABEL ---
+  function renderTable() {
+    const thead = dom.thead;
+    const tbody = dom.tbody;
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+    if (!state.data || state.data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="99" class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada record</p></td></tr>`;
+      return;
+    }
+    state.headers.forEach(field => {
+      const th = document.createElement('th');
+      th.textContent = capitalize(field);
+      th.className = 'text-left font-semibold text-gray-700 text-xs uppercase tracking-wider bg-gray-100/80 border-b border-gray-200';
+      thead.appendChild(th);
+    });
+    const thAction = document.createElement('th');
+    thAction.textContent = 'Aksi';
+    thAction.className = 'text-center font-semibold text-gray-700 text-xs uppercase tracking-wider bg-gray-100/80 border-b border-gray-200';
+    thead.appendChild(thAction);
+
+    const startIdx = (state.currentPage - 1) * PAGE_SIZE;
+    state.data.forEach((row, idx) => {
+      const tr = document.createElement('tr');
+      tr.className = (idx % 2 === 0) ? 'bg-white hover:bg-gray-50/70' : 'bg-gray-50/50 hover:bg-gray-100/70';
+      state.headers.forEach(field => {
+        const td = document.createElement('td');
+        td.textContent = row[field] !== undefined && row[field] !== null ? row[field] : '';
+        td.className = 'text-gray-800 text-sm';
+        tr.appendChild(td);
+      });
+      const tdAction = document.createElement('td');
+      tdAction.className = 'text-center';
+      const rowNum = startIdx + idx + 2;
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'action-btn bg-amber-400 hover:bg-amber-500 text-white mr-1';
+      btnEdit.innerHTML = `<i class="fas fa-pen"></i><span class="label">Edit</span>`;
+      btnEdit.onclick = () => openModalForEdit(row, rowNum);
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'action-btn bg-rose-500 hover:bg-rose-600 text-white';
+      btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Delete</span>`;
+      btnDelete.onclick = () => deleteRow(rowNum);
+      tdAction.appendChild(btnEdit);
+      tdAction.appendChild(btnDelete);
+      tr.appendChild(tdAction);
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- CARD ---
+  function renderCards() {
+    const container = dom.cardContainer;
+    container.innerHTML = '';
+    if (!state.data || state.data.length === 0) {
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada record</p></div>`;
+      return;
+    }
+    const startIdx = (state.currentPage - 1) * PAGE_SIZE;
+    state.data.forEach((row, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card-item';
+      state.headers.forEach(field => {
+        if (field === 'row') return;
+        const div = document.createElement('div');
+        div.className = 'field-row';
+        const label = document.createElement('span');
+        label.className = 'field-label';
+        label.textContent = capitalize(field);
+        const value = document.createElement('span');
+        value.className = 'field-value';
+        value.textContent = row[field] !== undefined && row[field] !== null ? row[field] : '';
+        div.appendChild(label);
+        div.appendChild(value);
+        card.appendChild(div);
+      });
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'card-actions';
+      const rowNum = startIdx + idx + 2;
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'action-btn bg-amber-400 hover:bg-amber-500 text-white';
+      btnEdit.innerHTML = `<i class="fas fa-pen"></i><span class="label">Edit</span>`;
+      btnEdit.onclick = () => openModalForEdit(row, rowNum);
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'action-btn bg-rose-500 hover:bg-rose-600 text-white';
+      btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Delete</span>`;
+      btnDelete.onclick = () => deleteRow(rowNum);
+      actionsDiv.appendChild(btnEdit);
+      actionsDiv.appendChild(btnDelete);
+      card.appendChild(actionsDiv);
+      container.appendChild(card);
+    });
+  }
+
+  // ------------------------------------------------------------
+  // 9. PAGINATION
+  // ------------------------------------------------------------
+  function updatePagination() {
+    dom.pageInfo.textContent = `Page ${state.currentPage} of ${state.totalPages || 1}`;
+    dom.prevPage.disabled = state.currentPage <= 1;
+    dom.nextPage.disabled = state.currentPage >= state.totalPages || state.totalPages === 0;
+    dom.firstPage.disabled = state.currentPage <= 1;
+    dom.lastPage.disabled = state.currentPage >= state.totalPages || state.totalPages === 0;
+  }
+
+  // ------------------------------------------------------------
+  // 10. INIT
+  // ------------------------------------------------------------
+  let resizeTimer;
+  function handleResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => renderData(), 250);
+  }
+
+  function init() {
+    dom.openBtn.addEventListener('click', openModalForCreate);
+    dom.cancelBtn.addEventListener('click', closeModal);
+    dom.closeBtn.addEventListener('click', closeModal);
+    dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dom.modal.style.display === 'flex') closeModal(); });
+
+    dom.submitBtn.addEventListener('click', (e) => { e.preventDefault(); handleSubmit(); });
+
+    dom.prevPage.addEventListener('click', () => { if (state.currentPage > 1) fetchData(state.currentPage - 1); });
+    dom.nextPage.addEventListener('click', () => { if (state.currentPage < state.totalPages) fetchData(state.currentPage + 1); });
+    dom.firstPage.addEventListener('click', () => { if (state.currentPage > 1) fetchData(1); });
+    dom.lastPage.addEventListener('click', () => { if (state.currentPage < state.totalPages) fetchData(state.totalPages); });
+
+    window.addEventListener('resize', handleResize);
+    fetchData(1);
+  }
+
+  init();
+
+})();
+</script>
+
+</body>
+</html>
