@@ -3,7 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OJT ID-2026</title>
+
+  <!-- JUDUL UTAMA -->
+  <title>Pemutakhiran Indeks Desa 2026 – Kec. Amonggedo (AinMediaCenter)</title>
+
+  <!-- DESKRIPSI SEO -->
+  <meta name="description" content="Aplikasi manajemen data Pemutakhiran Indeks Desa tahun 2026 yang difasilitasi oleh PLD Kec. Amonggedo, PD Kec. Amonggedo, dan TAPM Kab. Konawe. Dilaksanakan oleh seluruh desa se-Kecamatan Amonggedo. Dikembangkan oleh AinMediaCenter." />
+
+  <!-- KATA KUNCI -->
+  <meta name="keywords" content="Pemutakhiran Indeks Desa 2026, Indeks Desa, Kecamatan Amonggedo, PLD Amonggedo, PD Amonggedo, TAPM Konawe, AinMediaCenter, desa, Kabupaten Konawe, pendataan desa" />
+
+  <!-- ROBOT (karena ini aplikasi internal, tidak diindeks) -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- PENULIS / AUTHOR -->
+  <meta name="author" content="AinMediaCenter" />
+  <meta name="creator" content="AinMediaCenter" />
+
+  <!-- URL KANONIK (sesuaikan dengan URL publik jika ada) -->
+  <link rel="canonical" href="https://script.google.com/macros/s/AKfycbxUFmxXqA6ZfWMkcJw2yQJs-WZ1MsdIBIKaptKzSgRjcfNWw6GXUdGZVbZkjTXf4XSA/exec" />
+
+  <!-- OPEN GRAPH (Facebook / LinkedIn) -->
+  <meta property="og:title" content="Pemutakhiran Indeks Desa 2026 – Kec. Amonggedo" />
+  <meta property="og:description" content="Aplikasi pendataan dan pemutakhiran Indeks Desa tahun 2026 untuk seluruh desa di Kecamatan Amonggedo, Kabupaten Konawe. Difasilitasi oleh PLD, PD, dan TAPM." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://script.google.com/macros/s/AKfycbxUFmxXqA6ZfWMkcJw2yQJs-WZ1MsdIBIKaptKzSgRjcfNWw6GXUdGZVbZkjTXf4XSA/exec" />
+  <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Indeks+Desa+2026+Amonggedo" />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Pemutakhiran Indeks Desa 2026 – Kec. Amonggedo" />
+  <meta name="twitter:description" content="Aplikasi pemutakhiran data Indeks Desa 2026 se-Kec. Amonggedo, Kab. Konawe. Dikelola oleh AinMediaCenter." />
+
+  <!-- TEMA WARNA (untuk browser mobile) -->
+  <meta name="theme-color" content="#4f46e5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -67,7 +103,7 @@
 
     /* ===== FLOATING BUTTON – HANYA DI HP ===== */
     .floating-btn {
-      display: none; /* sembunyi di desktop */
+      display: none;
       position: fixed;
       bottom: 2rem;
       right: 1.5rem;
@@ -82,7 +118,6 @@
       cursor: pointer;
       transition: 0.2s;
       z-index: 40;
-      display: none; /* default hidden */
       align-items: center;
       gap: 0.6rem;
       white-space: nowrap;
@@ -92,30 +127,26 @@
       transform: scale(1.04);
       box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
     }
-    .floating-btn:active {
-      transform: scale(0.94);
-    }
-    .floating-btn i {
-      font-size: 1.2rem;
-    }
+    .floating-btn:active { transform: scale(0.94); }
+    .floating-btn i { font-size: 1.2rem; }
 
-    /* Muncul di layar kecil (HP) */
     @media (max-width: 768px) {
-      .floating-btn {
-        display: flex;
-      }
-      /* Sembunyikan tombol di header saat HP */
-      .header-btn-desktop {
-        display: none !important;
-      }
+      .floating-btn { display: flex; }
+      .header-btn-desktop { display: none !important; }
     }
 
-    /* Tampilan dual-mode */
     .table-wrap.desktop-only { display: block; }
     .card-wrap.mobile-only { display: none; }
     @media (max-width: 768px) {
       .table-wrap.desktop-only { display: none; }
       .card-wrap.mobile-only { display: block; }
+    }
+
+    /* Search bar responsive */
+    .search-wrap { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .search-wrap input { flex: 1; min-width: 150px; }
+    @media (max-width: 480px) {
+      .search-wrap input { min-width: 120px; }
     }
   </style>
 </head>
@@ -130,22 +161,32 @@
       <div class="spinner"></div>
     </div>
 
-    <!-- Header dengan tombol desktop -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
       <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 flex items-center gap-2">
         <i class="fas fa-database text-indigo-600"></i>
         OJT ID-2026
       </h1>
-      <!-- Tombol tambah data (desktop) -->
       <button id="openModalBtn" class="header-btn-desktop inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold transition shadow-md hover:shadow-lg active:scale-95 text-sm sm:text-base">
         <i class="fas fa-plus-circle"></i>
         <span>Tambah Data</span>
       </button>
     </div>
 
+    <!-- ===== SEARCH BAR ===== -->
+    <div class="search-wrap mb-5">
+      <input type="text" id="searchInput" placeholder="Cari data (semua kolom)..." class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+      <button id="searchBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition shadow-sm hover:shadow-md active:scale-95">
+        <i class="fas fa-search"></i> Cari
+      </button>
+      <button id="resetSearchBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2.5 rounded-xl flex items-center gap-2 transition active:scale-95">
+        <i class="fas fa-times"></i> Reset
+      </button>
+    </div>
+
     <!-- ===== TABEL (desktop) ===== -->
     <div class="table-wrap desktop-only rounded-xl border border-gray-200 shadow-sm">
-      <table class="bg-white">
+      <table class="bg-white w-full">
         <thead class="bg-gray-100/80 border-b border-gray-200">
           <tr id="tableHeader"></tr>
         </thead>
@@ -207,18 +248,19 @@
 (function() {
   'use strict';
 
-  const API_URL = 'https://script.google.com/macros/s/AKfycbykBS9AAj6klYXKZVNrGn1RJkkSdudaPnntXHHcVOuhtXr1hPC8gCoJSDPimW5IglW8Hg/exec';
-  const PAGE_SIZE = 20;
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxUFmxXqA6ZfWMkcJw2yQJs-WZ1MsdIBIKaptKzSgRjcfNWw6GXUdGZVbZkjTXf4XSA/exec';
+  const PAGE_SIZE = 14;
 
   const state = {
     headers: [],
     data: [],
     currentPage: 1,
     totalPages: 0,
-    editingRow: null,
+    editingRow: null,        // fisik row
     dropdowns: {},
     dropdownLoading: {},
     isPreloaded: false,
+    searchQuery: '',
   };
 
   const $ = id => document.getElementById(id);
@@ -242,6 +284,9 @@
     thead: $('tableHeader'),
     tbody: $('tableBody'),
     cardContainer: $('cardContainer'),
+    searchInput: $('searchInput'),
+    searchBtn: $('searchBtn'),
+    resetSearchBtn: $('resetSearchBtn'),
   };
 
   function showLoading(show) { dom.loading.style.display = show ? 'flex' : 'none'; }
@@ -391,7 +436,7 @@
   }
 
   function openModalForEdit(rowData, rowNum) {
-    state.editingRow = rowNum;
+    state.editingRow = rowNum;   // fisik
     dom.modalTitle.innerHTML = `<i class="fas fa-pen-to-square text-indigo-500 mr-2"></i> Edit Data (Baris ${rowNum})`;
     resetForm();
     buildForm(rowData);
@@ -409,11 +454,15 @@
   }
 
   // --- CRUD ---
-  async function fetchData(page) {
+  async function fetchData(page, search = state.searchQuery) {
     showLoading(true);
-    setOutput('Memuat data...');
+    const searchTerm = search ? search.trim() : '';
+    setOutput(searchTerm ? `Mencari "${searchTerm}" ...` : 'Memuat data...');
     try {
-      const url = `${API_URL}?action=read&page=${page}&pageSize=${PAGE_SIZE}`;
+      let url = `${API_URL}?action=read&page=${page}&pageSize=${PAGE_SIZE}`;
+      if (searchTerm) {
+        url += `&search=${encodeURIComponent(searchTerm)}`;
+      }
       const res = await fetch(url);
       const json = await res.json();
       if (json.data && Array.isArray(json.data)) {
@@ -421,21 +470,23 @@
         state.currentPage = json.page || 1;
         state.totalPages = json.totalPages || 0;
         state.data = json.data;
+        state.searchQuery = searchTerm;
         if (state.data.length === 0 && state.currentPage > 1) {
-          await fetchData(state.currentPage - 1);
+          await fetchData(state.currentPage - 1, searchTerm);
           return;
         }
         await preloadAllDropdowns();
         renderData();
         updatePagination();
-        setOutput(`Halaman ${state.currentPage} dari ${state.totalPages} · ${state.data.length} data`);
+        const info = searchTerm ? `Hasil pencarian "${searchTerm}"` : `Halaman ${state.currentPage}`;
+        setOutput(`${info} · ${state.data.length} data dari ${json.totalRecords || 0} total`);
       } else {
         state.data = [];
         state.headers = [];
         state.totalPages = 0;
         renderData();
         updatePagination();
-        setOutput('Tidak ada data', false);
+        setOutput(searchTerm ? `Tidak ada data untuk "${searchTerm}"` : 'Tidak ada data', false);
       }
     } catch (err) {
       setOutput('Gagal memuat: ' + err.message, true);
@@ -462,7 +513,7 @@
     if (!valid) { toast('warning', 'Semua field wajib diisi'); return; }
 
     const action = state.editingRow ? 'update' : 'create';
-    if (state.editingRow) formData.row = state.editingRow;
+    if (state.editingRow) formData.row = state.editingRow;   // fisik
 
     showLoading(true);
     setOutput(action === 'create' ? 'Menyimpan...' : 'Memperbarui...');
@@ -475,7 +526,7 @@
       if (json.success) {
         closeModal();
         toast('success', action === 'create' ? 'Data berhasil ditambahkan!' : 'Data diperbarui!');
-        fetchData(state.currentPage);
+        fetchData(state.currentPage, state.searchQuery);
       } else {
         const err = json.error || json.message || 'Terjadi kesalahan';
         showError(err);
@@ -502,7 +553,7 @@
       const json = await res.json();
       if (json.success) {
         toast('success', `Baris ${rowNum} berhasil dihapus`);
-        fetchData(state.currentPage);
+        fetchData(state.currentPage, state.searchQuery);
       } else {
         const err = json.error || 'Gagal menghapus';
         showError(err);
@@ -514,6 +565,19 @@
     } finally {
       showLoading(false);
     }
+  }
+
+  // --- SEARCH ---
+  function performSearch() {
+    const query = dom.searchInput.value.trim();
+    if (query === state.searchQuery) return;
+    fetchData(1, query);
+  }
+
+  function resetSearch() {
+    dom.searchInput.value = '';
+    if (state.searchQuery === '') return;
+    fetchData(1, '');
   }
 
   // --- RENDER DUAL MODE ---
@@ -530,12 +594,14 @@
     thead.innerHTML = '';
     tbody.innerHTML = '';
     if (!state.data || state.data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="99" class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="99" class="empty-state"><i class="fas fa-inbox"></i><p>${state.searchQuery ? 'Tidak ada data untuk pencarian' : 'Tidak ada data'}</p></td></tr>`;
       return;
     }
-    state.headers.forEach(field => {
+    // Tambahkan kolom "Baris" (fisik) di awal
+    const headersDisplay = ['Baris', ...state.headers.filter(h => h !== 'row')];
+    headersDisplay.forEach(field => {
       const th = document.createElement('th');
-      th.textContent = capitalize(field);
+      th.textContent = field === 'Baris' ? '#' : capitalize(field);
       th.className = 'text-left font-semibold text-gray-700 text-xs uppercase tracking-wider bg-gray-100/80 border-b border-gray-200';
       thead.appendChild(th);
     });
@@ -544,27 +610,33 @@
     thAction.className = 'text-center font-semibold text-gray-700 text-xs uppercase tracking-wider bg-gray-100/80 border-b border-gray-200';
     thead.appendChild(thAction);
 
-    const startIdx = (state.currentPage - 1) * PAGE_SIZE;
     state.data.forEach((row, idx) => {
       const tr = document.createElement('tr');
       tr.className = (idx % 2 === 0) ? 'bg-white hover:bg-gray-50/70' : 'bg-gray-50/50 hover:bg-gray-100/70';
+      // Kolom Baris
+      const tdRow = document.createElement('td');
+      tdRow.textContent = row.row;   // fisik
+      tdRow.className = 'text-gray-800 text-sm font-medium';
+      tr.appendChild(tdRow);
+      // Kolom data lainnya
       state.headers.forEach(field => {
+        if (field === 'row') return;
         const td = document.createElement('td');
         td.textContent = row[field] !== undefined && row[field] !== null ? row[field] : '';
         td.className = 'text-gray-800 text-sm';
         tr.appendChild(td);
       });
+      // Kolom Aksi
       const tdAction = document.createElement('td');
       tdAction.className = 'text-center';
-      const rowNum = startIdx + idx + 2;
       const btnEdit = document.createElement('button');
       btnEdit.className = 'action-btn bg-amber-400 hover:bg-amber-500 text-white mr-1';
       btnEdit.innerHTML = `<i class="fas fa-pen"></i><span class="label">Edit</span>`;
-      btnEdit.onclick = () => openModalForEdit(row, rowNum);
+      btnEdit.onclick = () => openModalForEdit(row, row.row);
       const btnDelete = document.createElement('button');
       btnDelete.className = 'action-btn bg-rose-500 hover:bg-rose-600 text-white';
       btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Hapus</span>`;
-      btnDelete.onclick = () => deleteRow(rowNum);
+      btnDelete.onclick = () => deleteRow(row.row);
       tdAction.appendChild(btnEdit);
       tdAction.appendChild(btnDelete);
       tr.appendChild(tdAction);
@@ -576,13 +648,25 @@
     const container = dom.cardContainer;
     container.innerHTML = '';
     if (!state.data || state.data.length === 0) {
-      container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></div>`;
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>${state.searchQuery ? 'Tidak ada data untuk pencarian' : 'Tidak ada data'}</p></div>`;
       return;
     }
-    const startIdx = (state.currentPage - 1) * PAGE_SIZE;
     state.data.forEach((row, idx) => {
       const card = document.createElement('div');
       card.className = 'card-item';
+      // Tampilkan nomor baris fisik
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'field-row';
+      const rowLabel = document.createElement('span');
+      rowLabel.className = 'field-label';
+      rowLabel.textContent = 'Baris :';
+      const rowValue = document.createElement('span');
+      rowValue.className = 'field-value';
+      rowValue.textContent = row.row;
+      rowDiv.appendChild(rowLabel);
+      rowDiv.appendChild(rowValue);
+      card.appendChild(rowDiv);
+
       state.headers.forEach(field => {
         if (field === 'row') return;
         const div = document.createElement('div');
@@ -599,15 +683,14 @@
       });
       const actionsDiv = document.createElement('div');
       actionsDiv.className = 'card-actions';
-      const rowNum = startIdx + idx + 2;
       const btnEdit = document.createElement('button');
       btnEdit.className = 'action-btn bg-amber-400 hover:bg-amber-500 text-white';
       btnEdit.innerHTML = `<i class="fas fa-pen"></i><span class="label">Edit</span>`;
-      btnEdit.onclick = () => openModalForEdit(row, rowNum);
+      btnEdit.onclick = () => openModalForEdit(row, row.row);
       const btnDelete = document.createElement('button');
       btnDelete.className = 'action-btn bg-rose-500 hover:bg-rose-600 text-white';
       btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Hapus</span>`;
-      btnDelete.onclick = () => deleteRow(rowNum);
+      btnDelete.onclick = () => deleteRow(row.row);
       actionsDiv.appendChild(btnEdit);
       actionsDiv.appendChild(btnDelete);
       card.appendChild(actionsDiv);
@@ -631,7 +714,6 @@
   }
 
   function init() {
-    // Tombol header (desktop) dan floating (HP)
     dom.openBtn.addEventListener('click', openModalForCreate);
     dom.floatingBtn.addEventListener('click', openModalForCreate);
 
@@ -639,16 +721,24 @@
     dom.closeBtn.addEventListener('click', closeModal);
     dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && dom.modal.style.display === 'flex') closeModal(); });
-
     dom.submitBtn.addEventListener('click', (e) => { e.preventDefault(); handleSubmit(); });
 
-    dom.prevPage.addEventListener('click', () => { if (state.currentPage > 1) fetchData(state.currentPage - 1); });
-    dom.nextPage.addEventListener('click', () => { if (state.currentPage < state.totalPages) fetchData(state.currentPage + 1); });
-    dom.firstPage.addEventListener('click', () => { if (state.currentPage > 1) fetchData(1); });
-    dom.lastPage.addEventListener('click', () => { if (state.currentPage < state.totalPages) fetchData(state.totalPages); });
+    dom.prevPage.addEventListener('click', () => { if (state.currentPage > 1) fetchData(state.currentPage - 1, state.searchQuery); });
+    dom.nextPage.addEventListener('click', () => { if (state.currentPage < state.totalPages) fetchData(state.currentPage + 1, state.searchQuery); });
+    dom.firstPage.addEventListener('click', () => { if (state.currentPage > 1) fetchData(1, state.searchQuery); });
+    dom.lastPage.addEventListener('click', () => { if (state.currentPage < state.totalPages) fetchData(state.totalPages, state.searchQuery); });
+
+    dom.searchBtn.addEventListener('click', performSearch);
+    dom.resetSearchBtn.addEventListener('click', resetSearch);
+    dom.searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        performSearch();
+      }
+    });
 
     window.addEventListener('resize', handleResize);
-    fetchData(1);
+    fetchData(1, '');
   }
 
   init();
