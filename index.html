@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data OJT ID-2026</title>
+  <title>Data Manager – CRUD GAS</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -26,7 +26,10 @@
     .action-btn { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.6rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 500; border: none; cursor: pointer; transition: 0.15s; white-space: nowrap; }
     .action-btn:active { transform: scale(0.93); }
     .action-btn .label { display: inline; }
-    @media (max-width: 420px) { .action-btn .label { display: none; } .action-btn { padding: 0.3rem 0.45rem; min-width: 2rem; } }
+    @media (max-width: 480px) {
+      .action-btn .label { display: inline; }
+      .action-btn { padding: 0.3rem 0.6rem; min-width: 3rem; }
+    }
     .pagination-wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.25rem; }
     .page-btn { padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 500; background: #e5e7eb; border: none; cursor: pointer; transition: 0.15s; display: inline-flex; align-items: center; gap: 0.3rem; }
     .page-btn:hover:not(:disabled) { background: #d1d5db; }
@@ -42,22 +45,69 @@
     .modal-close { position: absolute; top: 0.75rem; right: 0.75rem; background: transparent; border: none; font-size: 1.4rem; color: #9ca3af; cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 0.375rem; }
     .modal-close:hover { background: #f3f4f6; color: #1f2937; }
 
-    /* ===== CARD UNTUK MOBILE ===== */
+    /* ===== CARD UNTUK MOBILE – FIELD & DATA SATU BARIS ===== */
     .card-container { display: grid; grid-template-columns: 1fr; gap: 1rem; padding: 0.5rem 0; }
     .card-item { background: #fff; border-radius: 0.75rem; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1rem; transition: 0.15s; }
     .card-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-    .card-item .field-row { display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #f3f4f6; }
+    .card-item .field-row { display: flex; flex-wrap: nowrap; align-items: baseline; padding: 0.3rem 0; border-bottom: 1px solid #f3f4f6; gap: 0.3rem; }
     .card-item .field-row:last-of-type { border-bottom: none; }
-    .card-item .field-label { font-weight: 600; color: #4b5563; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
-    .card-item .field-value { color: #1f2937; font-size: 0.9rem; word-break: break-word; text-align: right; max-width: 65%; }
-    .card-item .card-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb; }
-    .card-item .card-actions .action-btn { font-size: 0.8rem; padding: 0.35rem 0.7rem; }
-    .card-item .card-actions .action-btn .label { display: inline; }
+    .card-item .field-label { font-weight: 700; color: #1f2937; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; flex-shrink: 0; }
+    .card-item .field-value { color: #1f2937; font-size: 0.9rem; word-break: break-word; text-align: left; flex: 1; min-width: 0; }
+    .card-item .card-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb; flex-wrap: wrap; }
+    .card-item .card-actions .action-btn { font-size: 0.8rem; padding: 0.4rem 0.8rem; min-width: 4rem; }
+    .card-item .card-actions .action-btn .label { display: inline; margin-left: 0.2rem; }
+
     @media (max-width: 480px) {
-      .card-item .field-row { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
-      .card-item .field-value { text-align: left; max-width: 100%; font-size: 0.85rem; }
-      .card-item .card-actions .action-btn .label { display: none; }
-      .card-item .card-actions .action-btn { padding: 0.3rem 0.5rem; min-width: 2.2rem; }
+      .card-item .field-row { flex-wrap: nowrap; gap: 0.2rem; }
+      .card-item .field-label { font-size: 0.7rem; flex-shrink: 0; }
+      .card-item .field-value { font-size: 0.8rem; }
+      .card-item .card-actions .action-btn { font-size: 0.7rem; padding: 0.25rem 0.5rem; min-width: 3.5rem; }
+      .card-item .card-actions .action-btn .label { font-size: 0.7rem; }
+    }
+
+    /* ===== FLOATING BUTTON – HANYA DI HP ===== */
+    .floating-btn {
+      display: none; /* sembunyi di desktop */
+      position: fixed;
+      bottom: 2rem;
+      right: 1.5rem;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      padding: 0.9rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+      cursor: pointer;
+      transition: 0.2s;
+      z-index: 40;
+      display: none; /* default hidden */
+      align-items: center;
+      gap: 0.6rem;
+      white-space: nowrap;
+    }
+    .floating-btn:hover {
+      background-color: #4338ca;
+      transform: scale(1.04);
+      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
+    }
+    .floating-btn:active {
+      transform: scale(0.94);
+    }
+    .floating-btn i {
+      font-size: 1.2rem;
+    }
+
+    /* Muncul di layar kecil (HP) */
+    @media (max-width: 768px) {
+      .floating-btn {
+        display: flex;
+      }
+      /* Sembunyikan tombol di header saat HP */
+      .header-btn-desktop {
+        display: none !important;
+      }
     }
 
     /* Tampilan dual-mode */
@@ -80,14 +130,16 @@
       <div class="spinner"></div>
     </div>
 
+    <!-- Header dengan tombol desktop -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 flex items-center gap-2">
         <i class="fas fa-database text-indigo-600"></i>
-        OJT ID-2026
+        Data Manager
       </h1>
-      <button id="openModalBtn" class="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold transition shadow-md hover:shadow-lg active:scale-95 text-sm sm:text-base">
+      <!-- Tombol tambah data (desktop) -->
+      <button id="openModalBtn" class="header-btn-desktop inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold transition shadow-md hover:shadow-lg active:scale-95 text-sm sm:text-base">
         <i class="fas fa-plus-circle"></i>
-        <span>Add Record</span>
+        <span>Tambah Data</span>
       </button>
     </div>
 
@@ -110,7 +162,7 @@
     <div class="pagination-wrap">
       <button id="firstPage" class="page-btn"><i class="fas fa-angles-left"></i><span class="label">First</span></button>
       <button id="prevPage" class="page-btn"><i class="fas fa-chevron-left"></i><span class="label">Prev</span></button>
-      <span id="pageInfo" class="text-sm font-medium text-gray-600 px-2">Page 1 of 1</span>
+      <span id="pageInfo" class="text-sm font-medium text-gray-600 px-2">Halaman 1 dari 1</span>
       <button id="nextPage" class="page-btn"><span class="label">Next</span><i class="fas fa-chevron-right"></i></button>
       <button id="lastPage" class="page-btn"><span class="label">Last</span><i class="fas fa-angles-right"></i></button>
     </div>
@@ -123,21 +175,27 @@
   </div>
 </div>
 
+<!-- ===== FLOATING BUTTON (HP) ===== -->
+<button id="floatingAddBtn" class="floating-btn" aria-label="Tambah Data">
+  <i class="fas fa-plus-circle"></i>
+  <span>Tambah Data</span>
+</button>
+
 <!-- ===== MODAL ===== -->
 <div id="modal" class="fixed inset-0 hidden modal-backdrop items-center justify-center z-50 p-4">
   <div id="modalPanel" class="modal-panel bg-white rounded-2xl shadow-2xl p-5 sm:p-7 relative">
     <button id="modalCloseBtn" class="modal-close"><i class="fas fa-times"></i></button>
     <h2 id="modalTitle" class="text-xl sm:text-2xl font-bold text-gray-800 mb-5 pr-8">
       <i class="fas fa-pen-to-square text-indigo-500 mr-2"></i>
-      Add New Record
+      Tambah Data Baru
     </h2>
     <form id="modalForm" class="modal-form"></form>
     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
       <button id="cancelBtn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold transition flex items-center justify-center gap-2">
-        <i class="fas fa-xmark"></i> Cancel
+        <i class="fas fa-xmark"></i> Batal
       </button>
       <button id="submitBtn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-        <i class="fas fa-check"></i> Save
+        <i class="fas fa-check"></i> Simpan
       </button>
     </div>
   </div>
@@ -149,29 +207,20 @@
 (function() {
   'use strict';
 
-  // ------------------------------------------------------------
-  // 1. KONFIGURASI
-  // ------------------------------------------------------------
   const API_URL = 'https://script.google.com/macros/s/AKfycbykBS9AAj6klYXKZVNrGn1RJkkSdudaPnntXHHcVOuhtXr1hPC8gCoJSDPimW5IglW8Hg/exec';
   const PAGE_SIZE = 20;
 
-  // ------------------------------------------------------------
-  // 2. STATE
-  // ------------------------------------------------------------
   const state = {
     headers: [],
     data: [],
     currentPage: 1,
     totalPages: 0,
     editingRow: null,
-    dropdowns: {},     // { fieldName: [ {id, uraian}, ... ] }
+    dropdowns: {},
     dropdownLoading: {},
     isPreloaded: false,
   };
 
-  // ------------------------------------------------------------
-  // 3. DOM REFS
-  // ------------------------------------------------------------
   const $ = id => document.getElementById(id);
   const dom = {
     loading: $('loadingOverlay'),
@@ -181,6 +230,7 @@
     modalForm: $('modalForm'),
     output: $('output'),
     openBtn: $('openModalBtn'),
+    floatingBtn: $('floatingAddBtn'),
     cancelBtn: $('cancelBtn'),
     submitBtn: $('submitBtn'),
     closeBtn: $('modalCloseBtn'),
@@ -194,12 +244,7 @@
     cardContainer: $('cardContainer'),
   };
 
-  // ------------------------------------------------------------
-  // 4. UI HELPERS
-  // ------------------------------------------------------------
-  function showLoading(show) {
-    dom.loading.style.display = show ? 'flex' : 'none';
-  }
+  function showLoading(show) { dom.loading.style.display = show ? 'flex' : 'none'; }
   function setOutput(msg, isError = false) {
     const icon = isError ? 'fa-circle-exclamation text-red-500' : 'fa-terminal text-gray-400';
     dom.output.innerHTML = `<i class="fas ${icon} mr-2"></i><span>${msg}</span>`;
@@ -212,7 +257,7 @@
   }
   function confirmDelete(row) {
     return Swal.fire({
-      title: 'Hapus Record?',
+      title: 'Hapus Data?',
       html: `Yakin ingin menghapus <strong>Baris ${row}</strong>?`,
       icon: 'warning',
       showCancelButton: true,
@@ -226,9 +271,7 @@
   }
   function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 
-  // ------------------------------------------------------------
-  // 5. DROPDOWN CACHE & PARALEL
-  // ------------------------------------------------------------
+  // --- DROPDOWN ---
   async function fetchDropdownOptions(fieldName) {
     if (state.dropdowns[fieldName]) return state.dropdowns[fieldName];
     if (state.dropdownLoading[fieldName]) {
@@ -265,9 +308,7 @@
     console.log('✅ Semua dropdown preloaded');
   }
 
-  // ------------------------------------------------------------
-  // 6. MODAL
-  // ------------------------------------------------------------
+  // --- MODAL ---
   function resetForm() {
     dom.modalForm.querySelectorAll('input, select').forEach(el => {
       el.value = '';
@@ -286,9 +327,7 @@
 
       const options = state.dropdowns[field] || [];
       let input;
-
       if (options.length > 0) {
-        // ===== DROPDOWN (value = uraian) =====
         const select = document.createElement('select');
         select.name = field;
         select.id = 'field_' + field;
@@ -296,21 +335,17 @@
         def.value = '';
         def.textContent = '-- Pilih --';
         select.appendChild(def);
-
         options.forEach(opt => {
           const o = document.createElement('option');
-          o.value = opt.uraian;          // <-- SIMPAN URAIAN, BUKAN ID
+          o.value = opt.uraian;
           o.textContent = opt.uraian;
           select.appendChild(o);
         });
-
-        // Saat edit, set value = uraian yang tersimpan (data[field])
         if (data[field] !== undefined && data[field] !== null) {
           select.value = data[field].toString();
         }
         input = select;
       } else {
-        // ===== INPUT BIASA =====
         const inp = document.createElement('input');
         inp.name = field;
         inp.id = 'field_' + field;
@@ -323,7 +358,6 @@
         else inp.type = 'text';
         input = inp;
       }
-
       div.appendChild(label);
       div.appendChild(input);
       dom.modalForm.appendChild(div);
@@ -346,7 +380,7 @@
 
   function openModalForCreate() {
     state.editingRow = null;
-    dom.modalTitle.innerHTML = `<i class="fas fa-plus-circle text-indigo-500 mr-2"></i> Add New Record`;
+    dom.modalTitle.innerHTML = `<i class="fas fa-plus-circle text-indigo-500 mr-2"></i> Tambah Data Baru`;
     resetForm();
     buildForm();
     showModal(true);
@@ -358,7 +392,7 @@
 
   function openModalForEdit(rowData, rowNum) {
     state.editingRow = rowNum;
-    dom.modalTitle.innerHTML = `<i class="fas fa-pen-to-square text-indigo-500 mr-2"></i> Edit Record (Row ${rowNum})`;
+    dom.modalTitle.innerHTML = `<i class="fas fa-pen-to-square text-indigo-500 mr-2"></i> Edit Data (Baris ${rowNum})`;
     resetForm();
     buildForm(rowData);
     showModal(true);
@@ -374,9 +408,7 @@
     state.editingRow = null;
   }
 
-  // ------------------------------------------------------------
-  // 7. CRUD API
-  // ------------------------------------------------------------
+  // --- CRUD ---
   async function fetchData(page) {
     showLoading(true);
     setOutput('Memuat data...');
@@ -396,7 +428,7 @@
         await preloadAllDropdowns();
         renderData();
         updatePagination();
-        setOutput(`Halaman ${state.currentPage} dari ${state.totalPages} · ${state.data.length} record`);
+        setOutput(`Halaman ${state.currentPage} dari ${state.totalPages} · ${state.data.length} data`);
       } else {
         state.data = [];
         state.headers = [];
@@ -442,7 +474,7 @@
       const json = await res.json();
       if (json.success) {
         closeModal();
-        toast('success', action === 'create' ? 'Record berhasil ditambahkan!' : 'Record diperbarui!');
+        toast('success', action === 'create' ? 'Data berhasil ditambahkan!' : 'Data diperbarui!');
         fetchData(state.currentPage);
       } else {
         const err = json.error || json.message || 'Terjadi kesalahan';
@@ -484,9 +516,7 @@
     }
   }
 
-  // ------------------------------------------------------------
-  // 8. RENDER DUAL MODE
-  // ------------------------------------------------------------
+  // --- RENDER DUAL MODE ---
   function isMobile() { return window.innerWidth < 768; }
 
   function renderData() {
@@ -494,14 +524,13 @@
     else renderTable();
   }
 
-  // --- TABEL ---
   function renderTable() {
     const thead = dom.thead;
     const tbody = dom.tbody;
     thead.innerHTML = '';
     tbody.innerHTML = '';
     if (!state.data || state.data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="99" class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada record</p></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="99" class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></td></tr>`;
       return;
     }
     state.headers.forEach(field => {
@@ -534,7 +563,7 @@
       btnEdit.onclick = () => openModalForEdit(row, rowNum);
       const btnDelete = document.createElement('button');
       btnDelete.className = 'action-btn bg-rose-500 hover:bg-rose-600 text-white';
-      btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Delete</span>`;
+      btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Hapus</span>`;
       btnDelete.onclick = () => deleteRow(rowNum);
       tdAction.appendChild(btnEdit);
       tdAction.appendChild(btnDelete);
@@ -543,12 +572,11 @@
     });
   }
 
-  // --- CARD ---
   function renderCards() {
     const container = dom.cardContainer;
     container.innerHTML = '';
     if (!state.data || state.data.length === 0) {
-      container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada record</p></div>`;
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Tidak ada data</p></div>`;
       return;
     }
     const startIdx = (state.currentPage - 1) * PAGE_SIZE;
@@ -561,7 +589,7 @@
         div.className = 'field-row';
         const label = document.createElement('span');
         label.className = 'field-label';
-        label.textContent = capitalize(field);
+        label.textContent = capitalize(field) + ' :';
         const value = document.createElement('span');
         value.className = 'field-value';
         value.textContent = row[field] !== undefined && row[field] !== null ? row[field] : '';
@@ -578,7 +606,7 @@
       btnEdit.onclick = () => openModalForEdit(row, rowNum);
       const btnDelete = document.createElement('button');
       btnDelete.className = 'action-btn bg-rose-500 hover:bg-rose-600 text-white';
-      btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Delete</span>`;
+      btnDelete.innerHTML = `<i class="fas fa-trash-can"></i><span class="label">Hapus</span>`;
       btnDelete.onclick = () => deleteRow(rowNum);
       actionsDiv.appendChild(btnEdit);
       actionsDiv.appendChild(btnDelete);
@@ -587,20 +615,15 @@
     });
   }
 
-  // ------------------------------------------------------------
-  // 9. PAGINATION
-  // ------------------------------------------------------------
   function updatePagination() {
-    dom.pageInfo.textContent = `Page ${state.currentPage} of ${state.totalPages || 1}`;
+    dom.pageInfo.textContent = `Halaman ${state.currentPage} dari ${state.totalPages || 1}`;
     dom.prevPage.disabled = state.currentPage <= 1;
     dom.nextPage.disabled = state.currentPage >= state.totalPages || state.totalPages === 0;
     dom.firstPage.disabled = state.currentPage <= 1;
     dom.lastPage.disabled = state.currentPage >= state.totalPages || state.totalPages === 0;
   }
 
-  // ------------------------------------------------------------
-  // 10. INIT
-  // ------------------------------------------------------------
+  // --- INIT ---
   let resizeTimer;
   function handleResize() {
     clearTimeout(resizeTimer);
@@ -608,7 +631,10 @@
   }
 
   function init() {
+    // Tombol header (desktop) dan floating (HP)
     dom.openBtn.addEventListener('click', openModalForCreate);
+    dom.floatingBtn.addEventListener('click', openModalForCreate);
+
     dom.cancelBtn.addEventListener('click', closeModal);
     dom.closeBtn.addEventListener('click', closeModal);
     dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) closeModal(); });
